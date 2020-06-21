@@ -37,22 +37,22 @@ enum NeoPixelMode {
 }
 
 /**
- * Functions to operate NeoPixel strips.
+ * Functions to operate a BBS Microbit Pixel.
  */
 //% weight=5 color=#2699BF icon="\uf110"
-namespace neopixel {
+namespace bbspixel {
     /**
      * A NeoPixel strip
      */
     export class Strip {
         buf: Buffer;
-        pin: DigitalPin;
+       // pin: DigitalPin;
         // TODO: encode as bytes instead of 32bit
         brightness: number;
-        start: number; // start offset in LED strip
-        _length: number; // number of LEDs
-        _mode: NeoPixelMode;
-        _matrixWidth: number; // number of leds in a matrix - if any
+      //  start: number; // start offset in LED strip
+        _length: 12; // number of LEDs
+        _mode: 1;
+      //  _matrixWidth: number; // number of leds in a matrix - if any
 
         /**
          * Shows all LEDs to a given color (range 0-255 for r, g, b).
@@ -84,7 +84,7 @@ namespace neopixel {
             endHue = endHue >> 0;
             const saturation = 100;
             const luminance = 50;
-            const steps = this._length;
+            const steps = 12;
             const direction = HueInterpolationDirection.Clockwise;
 
             //hue
@@ -247,8 +247,7 @@ namespace neopixel {
         //% weight=79
         //% parts="neopixel"
         show() {
-            // only supported in beta
-            // ws2812b.setBufferMode(this.pin, this._mode);
+                        
             ws2812b.sendBuffer(this.buf, this.pin);
         }
 
@@ -272,7 +271,7 @@ namespace neopixel {
         //% strip.defl=strip
         //% weight=60 advanced=true
         length() {
-            return this._length;
+            return 12;
         }
 
         /**
@@ -370,7 +369,7 @@ namespace neopixel {
         }
 
         /**
-         * Set the pin where the neopixel is connected, defaults to P0.
+         * Set the pin where the pixel is connected
          */
         //% weight=10
         //% parts="neopixel" advanced=true
@@ -483,25 +482,23 @@ namespace neopixel {
     }
 
     /**
-     * Create a new NeoPixel driver for `numleds` LEDs.
-     * @param pin the pin where the neopixel is connected.
-     * @param numleds number of leds in the strip, eg: 24,30,60,64
+     * Create a new BBS Pixel
      */
-    //% blockId="neopixel_create" block="NeoPixel at pin %pin|with %numleds|leds as %mode"
+    //% blockId="bbspixel_create" block="Create a BBS Pixel"
     //% weight=90 blockGap=8
-    //% parts="neopixel"
+    //% parts="BBS Pixel"
     //% trackArgs=0,2
     //% blockSetVariable=strip
-    export function create(pin: DigitalPin, numleds: number, mode: NeoPixelMode): Strip {
+    export function create(): Strip {
         let strip = new Strip();
-        let stride = mode === NeoPixelMode.RGBW ? 4 : 3;
-        strip.buf = pins.createBuffer(numleds * stride);
+        let stride = 3;
+        strip.buf = pins.createBuffer(12 * stride);
         strip.start = 0;
         strip._length = numleds;
-        strip._mode = mode || NeoPixelMode.RGB;
+        strip._mode =NeoPixelMode.RGB;
         strip._matrixWidth = 0;
         strip.setBrightness(128)
-        strip.setPin(pin)
+        strip.setPin( pins.digitalWritePin(0, 0); )
         return strip;
     }
 
